@@ -9,8 +9,9 @@ type Program struct {
 }
 
 const (
-	OPPUSH Operation = iota
-	OPPLUS
-	OPDUMP
-	COUNTOPS
+	OpPush Operation = iota
+	OpPlus
+	OpMinus
+	OpDump
+	CountOps
 )

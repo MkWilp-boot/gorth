@@ -5,15 +5,19 @@ import (
 )
 
 func Push(operand TYPES.Operand) TYPES.InsTUPLE {
-	return append(make(TYPES.InsTUPLE, 0), TYPES.OPPUSH, operand)
+	return append(make(TYPES.InsTUPLE, 0), TYPES.OpPush, operand)
 }
 
 func Plus() TYPES.InsTUPLE {
-	return append(make(TYPES.InsTUPLE, 0), TYPES.OPPLUS)
+	return append(make(TYPES.InsTUPLE, 0), TYPES.OpPlus)
+}
+
+func Minus() TYPES.InsTUPLE {
+	return append(make(TYPES.InsTUPLE, 0), TYPES.OpMinus)
 }
 
 func Dump() TYPES.InsTUPLE {
-	return append(make(TYPES.InsTUPLE, 0), TYPES.OPDUMP)
+	return append(make(TYPES.InsTUPLE, 0), TYPES.OpDump)
 }
 
 func StackPop(stack []TYPES.Operand) []TYPES.Operand {

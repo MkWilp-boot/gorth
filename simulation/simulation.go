@@ -11,15 +11,19 @@ func Simulate(program TYPES.Program) {
 	stack := make([]TYPES.Operand, 0)
 
 	for _, op := range program.Operations {
-		ASSERT.Assert(TYPES.COUNTOPS == 3, "Exhaustive handling of operations in simulation")
+		ASSERT.Assert(TYPES.CountOps == 4, "Exhaustive handling of operations in simulation")
 		switch op[0] {
-		case TYPES.OPPUSH:
+		case TYPES.OpPush:
 			stack = append(stack, op[1])
-		case TYPES.OPPLUS:
+		case TYPES.OpPlus:
 			a := OP.GetLastNDrop(&stack).(int)
 			b := OP.GetLastNDrop(&stack).(int)
 			stack = append(stack, a+b)
-		case TYPES.OPDUMP:
+		case TYPES.OpMinus:
+			a := OP.GetLastNDrop(&stack).(int)
+			b := OP.GetLastNDrop(&stack).(int)
+			stack = append(stack, b-a)
+		case TYPES.OpDump:
 			a := OP.GetLastNDrop(&stack)
 			fmt.Println(a)
 		default:
