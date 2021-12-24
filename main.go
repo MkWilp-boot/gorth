@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	ASSERT "gorth/asserts"
+	COM "gorth/compilation"
 	OP "gorth/operations"
 	SIM "gorth/simulation"
 	TYPES "gorth/types"
+	"log"
 	"os"
 )
 
@@ -41,6 +42,11 @@ func main() {
 	if subcommand == "sim" {
 		SIM.Simulate(program)
 	} else if subcommand == "com" {
-		ASSERT.Assert(false, "Not implemented")
+		COM.Compile(program, "output.asm")
+		err := COM.ToASM("output")
+		if err != nil {
+			log.Fatalf("Error: %v", err)
+		}
+		log.Println("Output asm compiled and linked")
 	}
 }

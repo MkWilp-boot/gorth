@@ -1,3 +1,4 @@
 *.exe
 go.sum
 .DS_STORE
+gorth
