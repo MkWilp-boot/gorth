@@ -74,22 +74,22 @@ func Compile(program TYPES.Program, outfilePath string) {
 		ASSERT.Assert(TYPES.CountOps == 4, "Exhaustive handling of operations in simulation")
 		switch op[0] {
 		case TYPES.OpPush:
-			writer.WriteString(fmt.Sprintf("\t;; push %d\n", op[1]))
+			writer.WriteString(fmt.Sprintf("\t; push %d\n", op[1]))
 			writer.WriteString(fmt.Sprintf("\tpush     %d\n", op[1]))
 		case TYPES.OpPlus:
-			writer.WriteString("\t;; plus \n")
+			writer.WriteString("\t; plus \n")
 			writer.WriteString("\tpop     rax\n")
 			writer.WriteString("\tpop     rbx\n")
 			writer.WriteString("\tadd     rax, rbx\n")
 			writer.WriteString("\tpush    rax\n")
 		case TYPES.OpMinus:
-			writer.WriteString("\t;; minus \n")
+			writer.WriteString("\t; minus \n")
 			writer.WriteString("\tpop     rax\n")
 			writer.WriteString("\tpop     rbx\n")
 			writer.WriteString("\tsub     rbx, rax\n")
 			writer.WriteString("\tpush    rbx\n")
 		case TYPES.OpDump:
-			writer.WriteString("\t;; dump %d\n")
+			writer.WriteString("\t; dump\n")
 			writer.WriteString("\tpop     rdi\n")
 			writer.WriteString("\tcall    dump\n")
 		default:

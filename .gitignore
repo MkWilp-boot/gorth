@@ -2,3 +2,6 @@
 go.sum
 .DS_STORE
 gorth
+dump
+*.asm
+*output*

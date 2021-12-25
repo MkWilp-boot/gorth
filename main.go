@@ -5,40 +5,30 @@ import (
 	COM "gorth/compilation"
 	OP "gorth/operations"
 	SIM "gorth/simulation"
-	TYPES "gorth/types"
 	"log"
 	"os"
 )
 
-var program TYPES.Program
-
-func init() {
-	program = TYPES.Program{
-		Operations: make([]TYPES.InsTUPLE, 0),
-	}
+func usage(prog string) {
+	fmt.Printf("USAGE: %s <SUBCOMMAND> [ARGS]\n", prog)
+	fmt.Println("SUBCOMMANDS:")
+	fmt.Println("\tsim <file>\tSimulate the program")
+	fmt.Println("\tcom <file>\tCompile the program")
 }
 
 func main() {
-	// TODO: unhardcode program
-	program.Operations = append(program.Operations,
-		OP.Push(34),
-		OP.Push(35),
-		OP.Plus(),
-		OP.Dump(),
-		OP.Push(500),
-		OP.Push(80),
-		OP.Minus(),
-		OP.Dump())
+	argv := append(make([]interface{}, 0), os.Args)
 
-	if len(os.Args) < 2 {
-		fmt.Println("USAGE: gorth <SUBCOMMAND> [ARGS]")
-		fmt.Println("SUBCOMMANDS:")
-		fmt.Println("\tsim\tSimulate the program")
-		fmt.Println("\tcom\tCompile the program")
+	program_name := OP.Uncons(&argv)
+	if len(argv[0].([]string)) < 2 {
+		usage(program_name.(string))
 		os.Exit(1)
 	}
 
-	subcommand := os.Args[1]
+	subcommand := OP.Uncons(&argv).(string) // remove subcommand
+	pathToProgram := OP.Uncons(&argv)       // remove target file
+	program := OP.LoadProgramFromFile(pathToProgram.(string))
+
 	if subcommand == "sim" {
 		SIM.Simulate(program)
 	} else if subcommand == "com" {
