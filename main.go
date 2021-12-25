@@ -38,5 +38,7 @@ func main() {
 			log.Fatalf("Error: %v", err)
 		}
 		log.Println("Output asm compiled and linked")
+	} else {
+		log.Printf("unsupported subcommand %s\n", subcommand)
 	}
 }

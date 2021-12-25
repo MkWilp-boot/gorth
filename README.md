@@ -6,9 +6,13 @@ All credits to Tsoding :)
 
 ## Quick Start
 
+### Emulate
 ```console
-$ go build .
-$ ./gorth sim <file>
-$ ./gorth com <file>
+$ ./gorth sim ./examples/test.gorth
+```
+
+### Compile
+```console
+$ ./gorth com ./examples/test.gorth
 $ ./output
 ```
