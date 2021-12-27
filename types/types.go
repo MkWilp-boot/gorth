@@ -19,6 +19,7 @@ const (
 	OpPush Operation = iota
 	OpPlus
 	OpMinus
+	OpEqual
 	OpDump
 	CountOps
 )

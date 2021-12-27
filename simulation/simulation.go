@@ -11,7 +11,7 @@ func Simulate(program TYPES.Program) {
 	stack := make([]TYPES.Operand, 0)
 
 	for _, op := range program.Operations {
-		ASSERT.Assert(TYPES.CountOps == 4, "Exhaustive handling of operations in simulation")
+		ASSERT.Assert(TYPES.CountOps == 5, "Exhaustive handling of operations in simulation")
 		switch op[0] {
 		case TYPES.OpPush:
 			stack = append(stack, op[1])
@@ -26,6 +26,16 @@ func Simulate(program TYPES.Program) {
 		case TYPES.OpDump:
 			a := OP.GetLastNDrop(&stack)
 			fmt.Println(a)
+		case TYPES.OpEqual:
+			a := OP.GetLastNDrop(&stack)
+			b := OP.GetLastNDrop(&stack)
+			var s int
+			if a == b {
+				s = 1
+			} else {
+				s = 0
+			}
+			stack = append(stack, s)
 		default:
 			ASSERT.Assert(false, "unreachable")
 		}

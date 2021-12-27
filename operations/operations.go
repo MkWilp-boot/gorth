@@ -24,6 +24,10 @@ func Dump() TYPES.InsTUPLE {
 	return append(make(TYPES.InsTUPLE, 0), TYPES.OpDump)
 }
 
+func Equal() TYPES.InsTUPLE {
+	return append(make(TYPES.InsTUPLE, 0), TYPES.OpEqual)
+}
+
 func StackPop(stack []TYPES.Operand) []TYPES.Operand {
 	return stack[:len(stack)-1]
 }
@@ -37,7 +41,7 @@ func LoadProgramFromFile(filePath string) TYPES.Program {
 }
 
 func parseTokenAsOperation(tokens []TYPES.Enumerator, filePath string) []TYPES.InsTUPLE {
-	ASSERT.Assert(TYPES.CountOps == 4, "Exhaustive handling of operations during parser")
+	ASSERT.Assert(TYPES.CountOps == 5, "Exhaustive handling of operations during parser")
 	ops := make([]TYPES.InsTUPLE, 0)
 
 	for _, value := range tokens {
@@ -57,6 +61,8 @@ func parseTokenAsOperation(tokens []TYPES.Enumerator, filePath string) []TYPES.I
 			ops = append(ops, Minus())
 		case token == ".":
 			ops = append(ops, Dump())
+		case token == "=":
+			ops = append(ops, Equal())
 		default:
 			ASSERT.Assert(false, fmt.Sprintf("File %q Line %d Column %d: %q is not a valid command", filePath, line, col, token))
 		}

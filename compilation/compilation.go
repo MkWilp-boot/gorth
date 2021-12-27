@@ -44,6 +44,7 @@ func Compile(program TYPES.Program, outfilePath string) {
 		panic(err)
 	}
 	writer := bufio.NewWriter(output)
+	writer.WriteString("BITS 64\n")
 	writer.WriteString("section .text\n")
 	writer.WriteString("dump:\n")
 	writer.WriteString("\tmov     r9, -3689348814741910323\n")
@@ -107,10 +108,11 @@ func Compile(program TYPES.Program, outfilePath string) {
 		case TYPES.OpEqual:
 			writer.WriteString("\t; equal\n")
 			writer.WriteString("\tmov rcx, 0\n")
+			writer.WriteString("\tmov rdx, 1\n")
 			writer.WriteString("\tpop rax\n")
 			writer.WriteString("\tpop rbx\n")
 			writer.WriteString("\tcmp rax, rbx\n")
-			writer.WriteString("\tcmove rcx, 1\n")
+			writer.WriteString("\tcmove rcx, rdx\n")
 		default:
 			ASSERT.Assert(false, "unreachable")
 		}

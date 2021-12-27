@@ -35,7 +35,7 @@ func main() {
 		COM.Compile(program, "output.asm")
 		err := COM.ToASM("output")
 		if err != nil {
-			log.Fatalf("Error: %v", err)
+			log.Fatalf("Error: %v", err.Error())
 		}
 		log.Println("Output asm compiled and linked")
 	} else {
