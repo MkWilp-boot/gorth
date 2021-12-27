@@ -2,6 +2,8 @@ package compilation
 
 import (
 	"bufio"
+	"bytes"
+	"errors"
 	"fmt"
 	ASSERT "gorth/asserts"
 	TYPES "gorth/types"
@@ -11,18 +13,28 @@ import (
 )
 
 func ToASM(file string) error {
-	out, err := exec.Command("nasm", "-felf64", file+".asm").Output()
-	if err != nil {
-		return err
-	}
-	log.Println(string(out))
+	cmd := exec.Command("nasm", "-felf64", file+".asm")
 
-	out, err = exec.Command("ld", "-o", file, file+".o").Output()
-	if err != nil {
-		return err
-	}
-	log.Println(string(out))
+	var outb, errb bytes.Buffer
+	cmd.Stdout = &outb
+	cmd.Stderr = &errb
 
+	err := cmd.Run()
+	if err != nil {
+		return errors.New(errb.String())
+	}
+	log.Println(outb.String())
+
+	cmd = exec.Command("ld", "-o", file, file+".o")
+
+	cmd.Stdout = &outb
+	cmd.Stderr = &errb
+
+	err = cmd.Run()
+	if err != nil {
+		return errors.New(errb.String())
+	}
+	log.Println(outb.String())
 	return nil
 }
 
@@ -71,7 +83,7 @@ func Compile(program TYPES.Program, outfilePath string) {
 	writer.WriteString("_start:\n")
 
 	for _, op := range program.Operations {
-		ASSERT.Assert(TYPES.CountOps == 4, "Exhaustive handling of operations in simulation")
+		ASSERT.Assert(TYPES.CountOps == 5, "Exhaustive handling of operations in simulation")
 		switch op[0] {
 		case TYPES.OpPush:
 			writer.WriteString(fmt.Sprintf("\t; push %d\n", op[1]))
@@ -92,6 +104,13 @@ func Compile(program TYPES.Program, outfilePath string) {
 			writer.WriteString("\t; dump\n")
 			writer.WriteString("\tpop     rdi\n")
 			writer.WriteString("\tcall    dump\n")
+		case TYPES.OpEqual:
+			writer.WriteString("\t; equal\n")
+			writer.WriteString("\tmov rcx, 0\n")
+			writer.WriteString("\tpop rax\n")
+			writer.WriteString("\tpop rbx\n")
+			writer.WriteString("\tcmp rax, rbx\n")
+			writer.WriteString("\tcmove rcx, 1\n")
 		default:
 			ASSERT.Assert(false, "unreachable")
 		}
