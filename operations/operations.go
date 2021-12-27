@@ -1,11 +1,11 @@
 package operations
 
 import (
+	"fmt"
 	ASSERT "gorth/asserts"
+	LEX "gorth/lexer"
 	TYPES "gorth/types"
-	"io/ioutil"
 	"strconv"
-	"strings"
 )
 
 func Push(operand TYPES.Operand) TYPES.InsTUPLE {
@@ -29,33 +29,36 @@ func StackPop(stack []TYPES.Operand) []TYPES.Operand {
 }
 
 func LoadProgramFromFile(filePath string) TYPES.Program {
-	program := TYPES.Program{}
-	bytes, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		panic(err)
+	enumerate := LEX.LexFile(filePath)
+	program := TYPES.Program{
+		Operations: parseTokenAsOperation(enumerate, filePath),
 	}
-	tokens := strings.ReplaceAll(string(bytes), "\n", " ")
-	content := strings.Split(tokens, " ")
-
-	program.Operations = parseWordAsOperation(content)
 	return program
 }
 
-func parseWordAsOperation(words []string) []TYPES.InsTUPLE {
-	ASSERT.Assert(TYPES.CountOps == 4, "Exhaustive handling of operations in simulation")
+func parseTokenAsOperation(tokens []TYPES.Enumerator, filePath string) []TYPES.InsTUPLE {
+	ASSERT.Assert(TYPES.CountOps == 4, "Exhaustive handling of operations during parser")
 	ops := make([]TYPES.InsTUPLE, 0)
-	for _, word := range words {
-		numeric, isNum := strconv.Atoi(word)
 
+	for _, value := range tokens {
+
+		pair := value.Slice.(TYPES.Enumerator).Slice.(TYPES.Enumerator)
+		token := pair.Slice.(string)
+		col := pair.Index
+		line := value.Slice.(TYPES.Enumerator).Index
+
+		numeric, isNum := strconv.Atoi(token)
 		switch {
-		case word == "+":
+		case token == "+":
 			ops = append(ops, Plus())
 		case isNum == nil:
 			ops = append(ops, Push(numeric))
-		case word == "-":
+		case token == "-":
 			ops = append(ops, Minus())
-		case word == ".":
+		case token == ".":
 			ops = append(ops, Dump())
+		default:
+			ASSERT.Assert(false, fmt.Sprintf("File %q Line %d Column %d: %q is not a valid command", filePath, line, col, token))
 		}
 	}
 	return ops
