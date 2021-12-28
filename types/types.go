@@ -21,6 +21,7 @@ const (
 	OpMinus
 	OpEqual
 	OpIf
+	OpElse
 	OpEnd
 	OpDump
 	CountOps

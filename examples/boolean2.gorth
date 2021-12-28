@@ -1,0 +1,9 @@
+34 35 + 70 = if
+    1 if
+        69 .
+    else
+        42 .
+    end
+else
+    420 .
+end

@@ -14,17 +14,29 @@ func CrossReferenceBlocks(program TYPES.Program) TYPES.Program {
 	stack := make([]TYPES.Operand, 0)
 
 	for ip, op := range program.Operations {
-		ASSERT.Assert(TYPES.CountOps == 7, "Exhaustive handling of operations in CrossReferenceProgram")
+		ASSERT.Assert(TYPES.CountOps == 8, "Exhaustive handling of operations in CrossReferenceBlocks")
 		switch op[0] {
 		case TYPES.OpIf:
 			stack = append(stack, ip)
-		case TYPES.OpEnd:
+		case TYPES.OpElse:
 			ifIp, err := OP.GetLastNDrop(&stack)
 			if err == ERR.ESliceEmpty {
 				panic(ERR.Errors[err])
 			}
-			ASSERT.Assert(program.Operations[ifIp.(int)][0] == TYPES.OpIf, "End can only close if blocks")
+			ASSERT.Assert(program.Operations[ifIp.(int)][0] == TYPES.OpIf, "Else can only be used in if blocks")
+
 			program.Operations[ifIp.(int)] = append(make(TYPES.InsTUPLE, 0), TYPES.OpIf, ip)
+			stack = append(stack, ip)
+		case TYPES.OpEnd:
+			blockIp, err := OP.GetLastNDrop(&stack)
+			if err == ERR.ESliceEmpty {
+				panic(ERR.Errors[err])
+			}
+			if program.Operations[blockIp.(int)][0] == TYPES.OpIf || program.Operations[blockIp.(int)][0] == TYPES.OpElse {
+				program.Operations[blockIp.(int)] = append(make(TYPES.InsTUPLE, 0), program.Operations[blockIp.(int)][0], ip)
+			} else {
+				ASSERT.Assert(false, "End can only close if-else blocks")
+			}
 		}
 	}
 	return program

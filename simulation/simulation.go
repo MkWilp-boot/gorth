@@ -13,7 +13,9 @@ func Simulate(program TYPES.Program) {
 
 	for ip := 0; ip < len(program.Operations); ip++ {
 		op := program.Operations[ip]
-		ASSERT.Assert(TYPES.CountOps == 7, "Exhaustive handling of operations in simulation")
+
+		ASSERT.Assert(TYPES.CountOps == 8, "Exhaustive handling of operations in simulation")
+
 		switch op[0] {
 		case TYPES.OpPush:
 			stack = append(stack, op[1])
@@ -52,11 +54,9 @@ func Simulate(program TYPES.Program) {
 			if err == ERR.ESliceEmpty {
 				panic(ERR.Errors[err])
 			}
-			var s int
+			var s int = 0
 			if a == b {
 				s = 1
-			} else {
-				s = 0
 			}
 			stack = append(stack, s)
 		case TYPES.OpIf:
@@ -68,6 +68,9 @@ func Simulate(program TYPES.Program) {
 				ASSERT.Assert(len(op) >= 2, "'If' instruction does not have an end block")
 				ip = op[1].(int)
 			}
+		case TYPES.OpElse:
+			ASSERT.Assert(len(op) >= 2, "'Else' instruction does not have an If reference block")
+			ip = op[1].(int)
 		case TYPES.OpEnd:
 		default:
 			ASSERT.Assert(false, "unreachable")

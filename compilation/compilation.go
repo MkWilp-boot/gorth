@@ -86,7 +86,7 @@ func Compile(program TYPES.Program, outfilePath string) {
 
 	for ip := 0; ip < len(program.Operations); ip++ {
 		op := program.Operations[ip]
-		ASSERT.Assert(TYPES.CountOps == 7, "Exhaustive handling of operations in simulation")
+		ASSERT.Assert(TYPES.CountOps == 8, "Exhaustive handling of operations in simulation")
 		switch op[0] {
 		case TYPES.OpPush:
 			writer.WriteString(fmt.Sprintf("\t; push %d\n", op[1]))
@@ -121,9 +121,15 @@ func Compile(program TYPES.Program, outfilePath string) {
 			writer.WriteString("\tpop rax\n")
 			writer.WriteString("\ttest rax, rax\n")
 
-			ASSERT.Assert(len(op) >= 2, "During compilation, If condition does not have and end block")
+			ASSERT.Assert(len(op) >= 2, "During compilation, If instruction does not have a reference to an End block")
 
 			writer.WriteString(fmt.Sprintf("\tjz addr_%d\n", op[1]))
+		case TYPES.OpElse:
+			writer.WriteString("\t; Else\n")
+			ASSERT.Assert(len(op) >= 2, "During compilation, Else instruction does not have a reference to an If block")
+
+			writer.WriteString(fmt.Sprintf("\tjmp addr_%d\n", op[1]))
+			writer.WriteString(fmt.Sprintf("addr_%d:\n", ip))
 		case TYPES.OpEnd:
 			writer.WriteString(fmt.Sprintf("\t; End of %d\n", ip))
 			writer.WriteString(fmt.Sprintf("addr_%d:\n", ip))
