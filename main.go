@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	COM "gorth/compilation"
+	LEX "gorth/lexer"
 	OP "gorth/operations"
 	SIM "gorth/simulation"
 	"log"
@@ -27,17 +28,12 @@ func main() {
 
 	subcommand := OP.Uncons(&argv).(string) // remove subcommand
 	pathToProgram := OP.Uncons(&argv)       // remove target file
-	program := OP.LoadProgramFromFile(pathToProgram.(string))
+	program := LEX.LoadProgramFromFile(pathToProgram.(string))
 
 	if subcommand == "sim" {
 		SIM.Simulate(program)
 	} else if subcommand == "com" {
 		COM.Compile(program, "output.asm")
-		err := COM.ToASM("output")
-		if err != nil {
-			log.Fatalf("Error: %v", err.Error())
-		}
-		log.Println("Output asm compiled and linked")
 	} else {
 		log.Printf("unsupported subcommand %s\n", subcommand)
 	}

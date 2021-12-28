@@ -10,6 +10,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 func ToASM(file string) error {
@@ -83,8 +84,9 @@ func Compile(program TYPES.Program, outfilePath string) {
 	writer.WriteString("global _start\n")
 	writer.WriteString("_start:\n")
 
-	for _, op := range program.Operations {
-		ASSERT.Assert(TYPES.CountOps == 5, "Exhaustive handling of operations in simulation")
+	for ip := 0; ip < len(program.Operations); ip++ {
+		op := program.Operations[ip]
+		ASSERT.Assert(TYPES.CountOps == 7, "Exhaustive handling of operations in simulation")
 		switch op[0] {
 		case TYPES.OpPush:
 			writer.WriteString(fmt.Sprintf("\t; push %d\n", op[1]))
@@ -113,6 +115,18 @@ func Compile(program TYPES.Program, outfilePath string) {
 			writer.WriteString("\tpop rbx\n")
 			writer.WriteString("\tcmp rax, rbx\n")
 			writer.WriteString("\tcmove rcx, rdx\n")
+			writer.WriteString("\tpush rcx\n")
+		case TYPES.OpIf:
+			writer.WriteString(fmt.Sprintf("\t; If of %d\n", op[1]))
+			writer.WriteString("\tpop rax\n")
+			writer.WriteString("\ttest rax, rax\n")
+
+			ASSERT.Assert(len(op) >= 2, "During compilation, If condition does not have and end block")
+
+			writer.WriteString(fmt.Sprintf("\tjz addr_%d\n", op[1]))
+		case TYPES.OpEnd:
+			writer.WriteString(fmt.Sprintf("\t; End of %d\n", ip))
+			writer.WriteString(fmt.Sprintf("addr_%d:\n", ip))
 		default:
 			ASSERT.Assert(false, "unreachable")
 		}
@@ -123,4 +137,10 @@ func Compile(program TYPES.Program, outfilePath string) {
 	writer.WriteString("\tsyscall\n")
 	writer.Flush()
 	output.Close()
+
+	err = ToASM(strings.Split(outfilePath, ".")[0])
+	if err != nil {
+		log.Fatalf("Error: %v", err.Error())
+	}
+	log.Println("Output asm compiled and linked")
 }

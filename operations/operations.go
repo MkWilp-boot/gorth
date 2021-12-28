@@ -3,7 +3,7 @@ package operations
 import (
 	"fmt"
 	ASSERT "gorth/asserts"
-	LEX "gorth/lexer"
+	ERR "gorth/errors"
 	TYPES "gorth/types"
 	"strconv"
 )
@@ -28,20 +28,20 @@ func Equal() TYPES.InsTUPLE {
 	return append(make(TYPES.InsTUPLE, 0), TYPES.OpEqual)
 }
 
+func If() TYPES.InsTUPLE {
+	return append(make(TYPES.InsTUPLE, 0), TYPES.OpIf)
+}
+
+func End() TYPES.InsTUPLE {
+	return append(make(TYPES.InsTUPLE, 0), TYPES.OpEnd)
+}
+
 func StackPop(stack []TYPES.Operand) []TYPES.Operand {
 	return stack[:len(stack)-1]
 }
 
-func LoadProgramFromFile(filePath string) TYPES.Program {
-	enumerate := LEX.LexFile(filePath)
-	program := TYPES.Program{
-		Operations: parseTokenAsOperation(enumerate, filePath),
-	}
-	return program
-}
-
-func parseTokenAsOperation(tokens []TYPES.Enumerator, filePath string) []TYPES.InsTUPLE {
-	ASSERT.Assert(TYPES.CountOps == 5, "Exhaustive handling of operations during parser")
+func ParseTokenAsOperation(tokens []TYPES.Enumerator, filePath string) []TYPES.InsTUPLE {
+	ASSERT.Assert(TYPES.CountOps == 7, "Exhaustive handling of operations during parser")
 	ops := make([]TYPES.InsTUPLE, 0)
 
 	for _, value := range tokens {
@@ -63,6 +63,10 @@ func parseTokenAsOperation(tokens []TYPES.Enumerator, filePath string) []TYPES.I
 			ops = append(ops, Dump())
 		case token == "=":
 			ops = append(ops, Equal())
+		case token == "if":
+			ops = append(ops, If())
+		case token == "end":
+			ops = append(ops, End())
 		default:
 			ASSERT.Assert(false, fmt.Sprintf("File %q Line %d Column %d: %q is not a valid command", filePath, line, col, token))
 		}
@@ -70,12 +74,15 @@ func parseTokenAsOperation(tokens []TYPES.Enumerator, filePath string) []TYPES.I
 	return ops
 }
 
-func GetLastNDrop(stack *[]TYPES.Operand) interface{} {
+func GetLastNDrop(stack *[]TYPES.Operand) (interface{}, ERR.Error) {
 	cp := *stack
+	if len(cp) == 0 {
+		return -1, ERR.ESliceEmpty
+	}
 	ret := cp[len(cp)-1]
 	cp = cp[:len(cp)-1]
 	*stack = cp
-	return ret
+	return ret, -1
 }
 
 func Uncons(slice *[]interface{}) (ret interface{}) {

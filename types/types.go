@@ -20,6 +20,8 @@ const (
 	OpPlus
 	OpMinus
 	OpEqual
+	OpIf
+	OpEnd
 	OpDump
 	CountOps
 )
