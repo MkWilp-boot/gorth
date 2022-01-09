@@ -55,7 +55,7 @@ func LexFile(filePath string) []TYPES.Enumerator {
 	if err != nil {
 		panic(err)
 	}
-	lines := make(TYPES.Enumerable, 0)
+	lines := make([]interface{}, 0)
 	for lineNumber, line := range strings.Split(string(bytes), "\n") {
 		if len(line) != 0 {
 			enumeration := make(chan TYPES.Enumerator)

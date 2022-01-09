@@ -1,9 +1,7 @@
 package types
 
 type Operation int
-type Content interface{}
 type Operand interface{}
-type Enumerable []interface{}
 type InsTUPLE []interface{}
 
 type Program struct {
@@ -12,7 +10,7 @@ type Program struct {
 
 type Enumerator struct {
 	Index uint
-	Slice Content
+	Slice interface{}
 }
 
 const (

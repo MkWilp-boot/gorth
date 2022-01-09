@@ -12,7 +12,7 @@ func FindInString(str, sub string, start int, end int) int {
 	return strings.Index(str[start:end], sub) + start
 }
 
-func Enumerate(a TYPES.Enumerable) []TYPES.Enumerator {
+func Enumerate(a []interface{}) []TYPES.Enumerator {
 	enum := make([]TYPES.Enumerator, 0)
 	for index, content := range a {
 		enum = append(enum, TYPES.Enumerator{
