@@ -8,11 +8,11 @@ All credits to Tsoding :)
 
 ### Emulate
 ```console
-$ ./gorth sim ./examples/test.gorth
+$ ./gorth sim ./examples/hello.gorth
 ```
 
 ### Compile
 ```console
-$ ./gorth com ./examples/test.gorth
+$ ./gorth com ./examples/hello.gorth
 $ ./output
 ```
