@@ -14,7 +14,7 @@ func Simulate(program TYPES.Program) {
 	for ip := 0; ip < len(program.Operations); ip++ {
 		op := program.Operations[ip]
 
-		ASSERT.Assert(TYPES.CountOps == 9, "Exhaustive handling of operations in simulation")
+		ASSERT.Assert(TYPES.CountOps == 10, "Exhaustive handling of operations in simulation")
 
 		switch op[0] {
 		case TYPES.OpPush:
@@ -40,8 +40,18 @@ func Simulate(program TYPES.Program) {
 			ERR.CheckErr(err)
 			b, err := OP.GetLastNDrop(&stack)
 			ERR.CheckErr(err)
-			var s int = 0
+			s := 0
 			if a == b {
+				s = 1
+			}
+			stack = append(stack, s)
+		case TYPES.OpGT:
+			a, err := OP.GetLastNDrop(&stack)
+			ERR.CheckErr(err)
+			b, err := OP.GetLastNDrop(&stack)
+			ERR.CheckErr(err)
+			s := 0
+			if b.(int) > a.(int) {
 				s = 1
 			}
 			stack = append(stack, s)

@@ -18,6 +18,7 @@ const (
 	OpPlus
 	OpMinus
 	OpEqual
+	OpGT
 	OpIf
 	OpElse
 	OpDup

@@ -86,7 +86,7 @@ func Compile(program TYPES.Program, outfilePath string) {
 
 	for ip := 0; ip < len(program.Operations); ip++ {
 		op := program.Operations[ip]
-		ASSERT.Assert(TYPES.CountOps == 9, "Exhaustive handling of operations in simulation")
+		ASSERT.Assert(TYPES.CountOps == 10, "Exhaustive handling of operations in simulation")
 		switch op[0] {
 		case TYPES.OpPush:
 			writer.WriteString(fmt.Sprintf("    ; push %d\n", op[1]))
@@ -115,6 +115,15 @@ func Compile(program TYPES.Program, outfilePath string) {
 			writer.WriteString("    pop rbx\n")
 			writer.WriteString("    cmp rax, rbx\n")
 			writer.WriteString("    cmove rcx, rdx\n")
+			writer.WriteString("    push rcx\n")
+		case TYPES.OpGT:
+			writer.WriteString("    ; GT\n")
+			writer.WriteString("    mov rcx, 0\n")
+			writer.WriteString("    mov rdx, 1\n")
+			writer.WriteString("    pop rbx\n")
+			writer.WriteString("    pop rax\n")
+			writer.WriteString("    cmp rax, rbx\n")
+			writer.WriteString("    cmovg rcx, rdx\n")
 			writer.WriteString("    push rcx\n")
 		case TYPES.OpIf:
 			writer.WriteString(fmt.Sprintf("    ; If of %d\n", op[1]))

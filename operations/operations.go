@@ -28,6 +28,10 @@ func Equal() TYPES.InsTUPLE {
 	return append(make(TYPES.InsTUPLE, 0), TYPES.OpEqual)
 }
 
+func GT() TYPES.InsTUPLE {
+	return append(make(TYPES.InsTUPLE, 0), TYPES.OpGT)
+}
+
 func If() TYPES.InsTUPLE {
 	return append(make(TYPES.InsTUPLE, 0), TYPES.OpIf)
 }
@@ -49,7 +53,7 @@ func StackPop(stack []TYPES.Operand) []TYPES.Operand {
 }
 
 func ParseTokenAsOperation(tokens []TYPES.Enumerator, filePath string) []TYPES.InsTUPLE {
-	ASSERT.Assert(TYPES.CountOps == 9, "Exhaustive handling of operations during parser")
+	ASSERT.Assert(TYPES.CountOps == 10, "Exhaustive handling of operations during parser")
 	ops := make([]TYPES.InsTUPLE, 0)
 
 	for _, value := range tokens {
@@ -71,6 +75,8 @@ func ParseTokenAsOperation(tokens []TYPES.Enumerator, filePath string) []TYPES.I
 			ops = append(ops, Dump())
 		case token == "=":
 			ops = append(ops, Equal())
+		case token == ">":
+			ops = append(ops, GT())
 		case token == "if":
 			ops = append(ops, If())
 		case token == "end":
