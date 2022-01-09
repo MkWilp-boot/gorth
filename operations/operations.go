@@ -36,6 +36,10 @@ func Else() TYPES.InsTUPLE {
 	return append(make(TYPES.InsTUPLE, 0), TYPES.OpElse)
 }
 
+func Dup() TYPES.InsTUPLE {
+	return append(make(TYPES.InsTUPLE, 0), TYPES.OpDup)
+}
+
 func End() TYPES.InsTUPLE {
 	return append(make(TYPES.InsTUPLE, 0), TYPES.OpEnd)
 }
@@ -45,7 +49,7 @@ func StackPop(stack []TYPES.Operand) []TYPES.Operand {
 }
 
 func ParseTokenAsOperation(tokens []TYPES.Enumerator, filePath string) []TYPES.InsTUPLE {
-	ASSERT.Assert(TYPES.CountOps == 8, "Exhaustive handling of operations during parser")
+	ASSERT.Assert(TYPES.CountOps == 9, "Exhaustive handling of operations during parser")
 	ops := make([]TYPES.InsTUPLE, 0)
 
 	for _, value := range tokens {
@@ -73,6 +77,8 @@ func ParseTokenAsOperation(tokens []TYPES.Enumerator, filePath string) []TYPES.I
 			ops = append(ops, End())
 		case token == "else":
 			ops = append(ops, Else())
+		case token == "dup":
+			ops = append(ops, Dup())
 		default:
 			ASSERT.Assert(false, fmt.Sprintf("File %q Line %d Column %d: %q is not a valid command", filePath, line, col, token))
 		}
