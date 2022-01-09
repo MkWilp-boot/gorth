@@ -21,6 +21,8 @@ const (
 	OpGT
 	OpIf
 	OpElse
+	OpWhile
+	OpDo
 	OpDup
 	OpEnd
 	OpDump

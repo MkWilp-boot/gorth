@@ -86,7 +86,8 @@ func Compile(program TYPES.Program, outfilePath string) {
 
 	for ip := 0; ip < len(program.Operations); ip++ {
 		op := program.Operations[ip]
-		ASSERT.Assert(TYPES.CountOps == 10, "Exhaustive handling of operations in simulation")
+		ASSERT.Assert(TYPES.CountOps == 12, "Exhaustive handling of operations in compilation")
+		writer.WriteString(fmt.Sprintf("addr_%d:\n", ip))
 		switch op[0] {
 		case TYPES.OpPush:
 			writer.WriteString(fmt.Sprintf("    ; push %d\n", op[1]))
@@ -125,6 +126,15 @@ func Compile(program TYPES.Program, outfilePath string) {
 			writer.WriteString("    cmp rax, rbx\n")
 			writer.WriteString("    cmovg rcx, rdx\n")
 			writer.WriteString("    push rcx\n")
+		case TYPES.OpWhile:
+			writer.WriteString("    ; while\n")
+		case TYPES.OpDo:
+			writer.WriteString("    ; Do\n")
+			writer.WriteString("    pop rax\n")
+			writer.WriteString("    test rax, rax\n")
+			ASSERT.Assert(len(op) >= 2, "During compilation, 'Do' instruction does not have a reference to an End block")
+
+			writer.WriteString(fmt.Sprintf("    jz addr_%d\n", op[1]))
 		case TYPES.OpIf:
 			writer.WriteString(fmt.Sprintf("    ; If of %d\n", op[1]))
 			writer.WriteString("    pop rax\n")
@@ -138,15 +148,17 @@ func Compile(program TYPES.Program, outfilePath string) {
 			ASSERT.Assert(len(op) >= 2, "During compilation, Else instruction does not have a reference to an If block")
 
 			writer.WriteString(fmt.Sprintf("    jmp addr_%d\n", op[1]))
-			writer.WriteString(fmt.Sprintf("addr_%d:\n", ip))
 		case TYPES.OpDup:
 			writer.WriteString("    ; Dup\n")
 			writer.WriteString("    pop rax\n")
 			writer.WriteString("    push rax\n")
 			writer.WriteString("    push rax\n")
 		case TYPES.OpEnd:
-			writer.WriteString(fmt.Sprintf("    ; End of %d\n", ip))
-			writer.WriteString(fmt.Sprintf("addr_%d:\n", ip))
+			writer.WriteString("    ; End\n")
+			ASSERT.Assert(len(op) >= 2, "During compilation, End instruction does not have a reference to an If block")
+			if ip+1 != op[1] {
+				writer.WriteString(fmt.Sprintf("    jmp addr_%d\n", op[1]))
+			}
 		default:
 			ASSERT.Assert(false, "unreachable")
 		}

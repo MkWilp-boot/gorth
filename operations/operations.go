@@ -44,6 +44,14 @@ func Dup() TYPES.InsTUPLE {
 	return append(make(TYPES.InsTUPLE, 0), TYPES.OpDup)
 }
 
+func While() TYPES.InsTUPLE {
+	return append(make(TYPES.InsTUPLE, 0), TYPES.OpWhile)
+}
+
+func Do() TYPES.InsTUPLE {
+	return append(make(TYPES.InsTUPLE, 0), TYPES.OpDo)
+}
+
 func End() TYPES.InsTUPLE {
 	return append(make(TYPES.InsTUPLE, 0), TYPES.OpEnd)
 }
@@ -53,7 +61,7 @@ func StackPop(stack []TYPES.Operand) []TYPES.Operand {
 }
 
 func ParseTokenAsOperation(tokens []TYPES.Enumerator, filePath string) []TYPES.InsTUPLE {
-	ASSERT.Assert(TYPES.CountOps == 10, "Exhaustive handling of operations during parser")
+	ASSERT.Assert(TYPES.CountOps == 12, "Exhaustive handling of operations during parser")
 	ops := make([]TYPES.InsTUPLE, 0)
 
 	for _, value := range tokens {
@@ -83,6 +91,10 @@ func ParseTokenAsOperation(tokens []TYPES.Enumerator, filePath string) []TYPES.I
 			ops = append(ops, End())
 		case token == "else":
 			ops = append(ops, Else())
+		case token == "while":
+			ops = append(ops, While())
+		case token == "do":
+			ops = append(ops, Do())
 		case token == "dup":
 			ops = append(ops, Dup())
 		default:
