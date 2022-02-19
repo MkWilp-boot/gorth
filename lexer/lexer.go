@@ -85,19 +85,19 @@ func LexFile(filePath string) []types.Vec2DString {
 	lines := make([]types.Vec2DString, 0)
 
 	for lineNumber, line := range strings.Split(string(bytes), newLine) {
-		if len(line) != 0 {
-			enumeration := make(chan types.StringEnum)
+		if len(line) == 0 {
+			continue
+		}
+		enumeration := make(chan types.StringEnum)
 
-			go helpers.EnumerateLine(line, enumeration)
+		go helpers.EnumerateLine(line, enumeration)
 
-			for enumeratedLine := range enumeration {
-				vec2d := types.Vec2DString{
-					Index:   lineNumber + 1,
-					Content: enumeratedLine,
-				}
-				lines = append(lines, vec2d)
+		for enumeratedLine := range enumeration {
+			vec2d := types.Vec2DString{
+				Index:   lineNumber + 1,
+				Content: enumeratedLine,
 			}
-
+			lines = append(lines, vec2d)
 		}
 	}
 	return helpers.Enumerate(lines)

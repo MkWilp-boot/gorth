@@ -14,11 +14,11 @@ func ParseTokenAsOperation(tokens []TYPES.Vec2DString, filePath string) []TYPES.
 
 	for _, value := range tokens {
 
-		pair := value.Content //.(TYPES.Enumerator).Slice.(TYPES.Enumerator)
+		pair := value.Content
 
 		token := pair.Slice
 		col := pair.Index
-		line := value.Content.Index //Slice.(TYPES.Enumerator).Index
+		line := value.Content.Index
 
 		numeric, isNum := strconv.Atoi(token)
 		switch {
