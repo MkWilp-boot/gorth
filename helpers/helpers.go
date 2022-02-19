@@ -32,7 +32,14 @@ func findCol(line string, start int, predicate func(string) bool) int {
 }
 
 func EnumerateLine(line string, enumeration chan<- types.StringEnum) {
-	line = strings.TrimRight(line, "\n")
+	// checking for comments
+	if strings.Contains(line, "//") {
+		commentIndex := strings.Index(line, "//")
+		line = line[:commentIndex]
+	}
+
+	line = strings.TrimSpace(line)
+
 	col := findCol(line, 0, func(s string) bool {
 		return s != " "
 	})

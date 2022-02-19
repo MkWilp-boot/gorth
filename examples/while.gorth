@@ -1,10 +1,4 @@
 10 while dup 0 > do
-    dup 5 = if
-        0 if
-            dup .
-        else
-            100 .
-        end
-    end
+    dup .
     1 -
 end
