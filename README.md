@@ -6,13 +6,7 @@ All credits to Tsoding :)
 
 ## Quick Start
 
-### Emulate
+### Run a program
 ```console
 $ ./gorth sim ./examples/hello.gorth
-```
-
-### Compile
-```console
-$ ./gorth com ./examples/hello.gorth
-$ ./output
 ```
