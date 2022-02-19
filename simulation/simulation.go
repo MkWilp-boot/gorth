@@ -15,7 +15,7 @@ func Simulate(program TYPES.Program) {
 	for ip < len(program.Operations) {
 		op := program.Operations[ip]
 
-		ASSERT.Assert(TYPES.CountOps == 12, "Exhaustive handling of operations in simulation")
+		ASSERT.AssertThat(TYPES.CountOps == 12, "Exhaustive handling of operations in simulation")
 
 		switch op[0] {
 		case TYPES.OpPush:
@@ -66,13 +66,13 @@ func Simulate(program TYPES.Program) {
 			a, err := OP.GetLastNDrop(&stack)
 			ERR.CheckErr(err)
 			if a == 0 {
-				ASSERT.Assert(len(op) >= 2, "'If' instruction does not have an end block")
+				ASSERT.AssertThat(len(op) >= 2, "'If' instruction does not have an end block")
 				ip = op[1].(int)
 			} else {
 				ip++
 			}
 		case TYPES.OpElse:
-			ASSERT.Assert(len(op) >= 2, "'Else' instruction does not have an If reference block")
+			ASSERT.AssertThat(len(op) >= 2, "'Else' instruction does not have an If reference block")
 			ip = op[1].(int)
 		case TYPES.OpDup:
 			a, err := OP.GetLastNDrop(&stack)
@@ -85,16 +85,16 @@ func Simulate(program TYPES.Program) {
 			a, err := OP.GetLastNDrop(&stack)
 			ERR.CheckErr(err)
 			if a.(int) == 0 {
-				ASSERT.Assert(len(op) >= 2, "'End' instruction does not have an reference to any block")
+				ASSERT.AssertThat(len(op) >= 2, "'End' instruction does not have an reference to any block")
 				ip = op[1].(int)
 			} else {
 				ip++
 			}
 		case TYPES.OpEnd:
-			ASSERT.Assert(len(op) >= 2, "'End' instruction does not have an reference to any block")
+			ASSERT.AssertThat(len(op) >= 2, "'End' instruction does not have an reference to any block")
 			ip = op[1].(int)
 		default:
-			ASSERT.Assert(false, "unreachable")
+			ASSERT.AssertThat(false, "unreachable")
 		}
 	}
 }

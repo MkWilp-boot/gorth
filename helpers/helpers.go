@@ -1,7 +1,7 @@
 package helpers
 
 import (
-	TYPES "gorth/types"
+	"gorth/types"
 	"strings"
 )
 
@@ -12,12 +12,13 @@ func FindInString(str, sub string, start int, end int) int {
 	return strings.Index(str[start:end], sub) + start
 }
 
-func Enumerate(a []interface{}) []TYPES.Enumerator {
-	enum := make([]TYPES.Enumerator, 0)
-	for index, content := range a {
-		enum = append(enum, TYPES.Enumerator{
-			Index: uint(index + 1),
-			Slice: content,
+func Enumerate(sVec2d []types.Vec2DString) []types.Vec2DString {
+	enum := make([]types.Vec2DString, 0)
+
+	for index, content := range sVec2d {
+		enum = append(enum, types.Vec2DString{
+			Index:   index + 1,
+			Content: content.Content,
 		})
 	}
 	return enum
@@ -30,7 +31,7 @@ func findCol(line string, start int, predicate func(string) bool) int {
 	return start
 }
 
-func EnumerateLine(line string, enumeration chan<- TYPES.Enumerator) {
+func EnumerateLine(line string, enumeration chan<- types.StringEnum) {
 	line = strings.TrimRight(line, "\n")
 	col := findCol(line, 0, func(s string) bool {
 		return s != " "
@@ -39,8 +40,8 @@ func EnumerateLine(line string, enumeration chan<- TYPES.Enumerator) {
 		colEnd := findCol(line, col, func(s string) bool {
 			return s == " "
 		})
-		enumeration <- TYPES.Enumerator{
-			Index: uint(col),
+		enumeration <- types.StringEnum{
+			Index: col,
 			Slice: line[col:colEnd],
 		}
 		col = findCol(line, colEnd, func(s string) bool {

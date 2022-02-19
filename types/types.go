@@ -8,9 +8,14 @@ type Program struct {
 	Operations []InsTUPLE
 }
 
-type Enumerator struct {
-	Index uint
-	Slice interface{}
+type StringEnum struct {
+	Index int
+	Slice string
+}
+
+type Vec2DString struct {
+	Index   int
+	Content StringEnum
 }
 
 const (
