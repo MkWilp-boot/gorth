@@ -1,3 +1,3 @@
 // this is a line with just a comment
-2022 . // this is also a line but with code and a comment
-// 500 . this code won't be printed to stdout
+2022 dump // this is also a line but with code and a comment
+// 500 dump this code won't be printed to stdout

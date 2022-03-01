@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"gorth/asserts"
 	ERR "gorth/errors"
-	TYPES "gorth/types"
+	"gorth/types"
 	"strconv"
 )
 
-func ParseTokenAsOperation(tokens []TYPES.Vec2DString, filePath string) []TYPES.InsTUPLE {
-	asserts.AssertThat(TYPES.CountOps == 12, "Exhaustive handling of operations during parser")
-	ops := make([]TYPES.InsTUPLE, 0)
+func ParseTokenAsOperation(tokens []types.Vec2DString, filePath string) []types.InsTUPLE {
+	asserts.AssertThat(types.CountOps == 12, "Exhaustive handling of operations during parser")
+	ops := make([]types.InsTUPLE, 0)
 
 	for _, value := range tokens {
 
@@ -28,7 +28,7 @@ func ParseTokenAsOperation(tokens []TYPES.Vec2DString, filePath string) []TYPES.
 			ops = append(ops, Push(numeric))
 		case token == "-":
 			ops = append(ops, Minus())
-		case token == ".":
+		case token == "dump":
 			ops = append(ops, Dump())
 		case token == "=":
 			ops = append(ops, Equal())
@@ -53,7 +53,7 @@ func ParseTokenAsOperation(tokens []TYPES.Vec2DString, filePath string) []TYPES.
 	return ops
 }
 
-func GetLastNDrop(stack *[]TYPES.Operand) (interface{}, ERR.Error) {
+func GetLastNDrop(stack *[]types.Operand) (interface{}, ERR.Error) {
 	cp := *stack
 	if len(cp) == 0 {
 		return -1, ERR.ESliceEmpty
@@ -64,54 +64,58 @@ func GetLastNDrop(stack *[]TYPES.Operand) (interface{}, ERR.Error) {
 	return ret, -1
 }
 
-func Push(operand TYPES.Operand) TYPES.InsTUPLE {
-	return append(make(TYPES.InsTUPLE, 0), TYPES.OpPush, operand)
+func Push(operand types.Operand) types.InsTUPLE {
+	return append(make(types.InsTUPLE, 0), types.OpPush, operand)
 }
 
-func Plus() TYPES.InsTUPLE {
-	return append(make(TYPES.InsTUPLE, 0), TYPES.OpPlus)
+func Plus() types.InsTUPLE {
+	return append(make(types.InsTUPLE, 0), types.OpPlus)
 }
 
-func Minus() TYPES.InsTUPLE {
-	return append(make(TYPES.InsTUPLE, 0), TYPES.OpMinus)
+func Minus() types.InsTUPLE {
+	return append(make(types.InsTUPLE, 0), types.OpMinus)
 }
 
-func Dump() TYPES.InsTUPLE {
-	return append(make(TYPES.InsTUPLE, 0), TYPES.OpDump)
+func Dump() types.InsTUPLE {
+	return append(make(types.InsTUPLE, 0), types.OpDump)
 }
 
-func Equal() TYPES.InsTUPLE {
-	return append(make(TYPES.InsTUPLE, 0), TYPES.OpEqual)
+func Equal() types.InsTUPLE {
+	return append(make(types.InsTUPLE, 0), types.OpEqual)
 }
 
-func GT() TYPES.InsTUPLE {
-	return append(make(TYPES.InsTUPLE, 0), TYPES.OpGT)
+func GT() types.InsTUPLE {
+	return append(make(types.InsTUPLE, 0), types.OpGT)
 }
 
-func If() TYPES.InsTUPLE {
-	return append(make(TYPES.InsTUPLE, 0), TYPES.OpIf)
+func If() types.InsTUPLE {
+	return append(make(types.InsTUPLE, 0), types.OpIf)
 }
 
-func Else() TYPES.InsTUPLE {
-	return append(make(TYPES.InsTUPLE, 0), TYPES.OpElse)
+func Else() types.InsTUPLE {
+	return append(make(types.InsTUPLE, 0), types.OpElse)
 }
 
-func Dup() TYPES.InsTUPLE {
-	return append(make(TYPES.InsTUPLE, 0), TYPES.OpDup)
+func Dup() types.InsTUPLE {
+	return append(make(types.InsTUPLE, 0), types.OpDup)
 }
 
-func While() TYPES.InsTUPLE {
-	return append(make(TYPES.InsTUPLE, 0), TYPES.OpWhile)
+func While() types.InsTUPLE {
+	return append(make(types.InsTUPLE, 0), types.OpWhile)
 }
 
-func Do() TYPES.InsTUPLE {
-	return append(make(TYPES.InsTUPLE, 0), TYPES.OpDo)
+func Do() types.InsTUPLE {
+	return append(make(types.InsTUPLE, 0), types.OpDo)
 }
 
-func End() TYPES.InsTUPLE {
-	return append(make(TYPES.InsTUPLE, 0), TYPES.OpEnd)
+func End() types.InsTUPLE {
+	return append(make(types.InsTUPLE, 0), types.OpEnd)
 }
 
-func StackPop(stack []TYPES.Operand) []TYPES.Operand {
+func Mem() types.InsTUPLE {
+	return append(make(types.InsTUPLE, 0), types.OpMem)
+}
+
+func StackPop(stack []types.Operand) []types.Operand {
 	return stack[:len(stack)-1]
 }

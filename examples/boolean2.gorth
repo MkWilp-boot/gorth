@@ -1,9 +1,9 @@
 34 35 + 69 = if
     1 if
-        69 .
+        69 dump
     else
-        42 .
+        42 dump
     end
 else
-    420 .
+    420 dump
 end
