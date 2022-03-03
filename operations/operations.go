@@ -9,7 +9,7 @@ import (
 )
 
 func ParseTokenAsOperation(tokens []types.Vec2DString, filePath string) []types.InsTUPLE {
-	asserts.AssertThat(types.CountOps == 12, "Exhaustive handling of operations during parser")
+	asserts.AssertThat(types.CountOps == 15, "Exhaustive handling of operations during parser")
 	ops := make([]types.InsTUPLE, 0)
 
 	for _, value := range tokens {
@@ -46,6 +46,12 @@ func ParseTokenAsOperation(tokens []types.Vec2DString, filePath string) []types.
 			ops = append(ops, Do())
 		case token == "dup":
 			ops = append(ops, Dup())
+		case token == "mem":
+			ops = append(ops, Mem())
+		case token == ".":
+			ops = append(ops, Store())
+		case token == ",":
+			ops = append(ops, Load())
 		default:
 			asserts.AssertThat(false, fmt.Sprintf("File %q Line %d Column %d: %q is not a valid command", filePath, line, col, token))
 		}
@@ -114,6 +120,14 @@ func End() types.InsTUPLE {
 
 func Mem() types.InsTUPLE {
 	return append(make(types.InsTUPLE, 0), types.OpMem)
+}
+
+func Store() types.InsTUPLE {
+	return append(make(types.InsTUPLE, 0), types.OpStore)
+}
+
+func Load() types.InsTUPLE {
+	return append(make(types.InsTUPLE, 0), types.OpLoad)
 }
 
 func StackPop(stack []types.Operand) []types.Operand {

@@ -25,7 +25,7 @@ func CrossReferenceBlocks(program types.Program) types.Program {
 	stack := make([]types.Operand, 0)
 
 	for ip, op := range program.Operations {
-		asserts.AssertThat(types.CountOps == 12, "Exhaustive handling of operations in CrossReferenceBlocks")
+		asserts.AssertThat(types.CountOps == 15, "Exhaustive handling of operations in CrossReferenceBlocks")
 		switch op[0] {
 		case types.OpIf:
 			stack = append(stack, ip)

@@ -31,5 +31,8 @@ const (
 	OpDup
 	OpEnd
 	OpDump
+	OpMem
+	OpLoad
+	OpStore
 	CountOps
 )

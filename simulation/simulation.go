@@ -2,99 +2,119 @@ package simulation
 
 import (
 	"fmt"
-	ASSERT "gorth/asserts"
-	ERR "gorth/errors"
-	OP "gorth/operations"
-	TYPES "gorth/types"
+	"gorth/asserts"
+	"gorth/errors"
+	"gorth/operations"
+	"gorth/types"
 )
 
-func Simulate(program TYPES.Program) {
-	stack := make([]TYPES.Operand, 0)
+const memCapacity = 640000
+
+func Simulate(program types.Program) {
+	stack := make([]types.Operand, 0)
+	mem := make([]byte, memCapacity)
 
 	ip := 0
 	for ip < len(program.Operations) {
 		op := program.Operations[ip]
 
-		ASSERT.AssertThat(TYPES.CountOps == 12, "Exhaustive handling of operations in simulation")
+		asserts.AssertThat(types.CountOps == 15, "Exhaustive handling of operations in simulation")
 
 		switch op[0] {
-		case TYPES.OpPush:
+		case types.OpPush:
 			stack = append(stack, op[1])
 			ip++
-		case TYPES.OpPlus:
-			a, err := OP.GetLastNDrop(&stack)
-			ERR.CheckErr(err)
-			b, err := OP.GetLastNDrop(&stack)
-			ERR.CheckErr(err)
+		case types.OpPlus:
+			a, err := operations.GetLastNDrop(&stack)
+			errors.CheckErr(err)
+			b, err := operations.GetLastNDrop(&stack)
+			errors.CheckErr(err)
+
 			stack = append(stack, a.(int)+b.(int))
 			ip++
-		case TYPES.OpMinus:
-			a, err := OP.GetLastNDrop(&stack)
-			ERR.CheckErr(err)
-			b, err := OP.GetLastNDrop(&stack)
-			ERR.CheckErr(err)
+		case types.OpMinus:
+			a, err := operations.GetLastNDrop(&stack)
+			errors.CheckErr(err)
+			b, err := operations.GetLastNDrop(&stack)
+			errors.CheckErr(err)
 			stack = append(stack, b.(int)-a.(int))
 			ip++
-		case TYPES.OpDump:
-			a, err := OP.GetLastNDrop(&stack)
-			ERR.CheckErr(err)
+		case types.OpDump:
+			a, err := operations.GetLastNDrop(&stack)
+			errors.CheckErr(err)
 			fmt.Println(a)
 			ip++
-		case TYPES.OpEqual:
-			a, err := OP.GetLastNDrop(&stack)
-			ERR.CheckErr(err)
-			b, err := OP.GetLastNDrop(&stack)
-			ERR.CheckErr(err)
+		case types.OpEqual:
+			a, err := operations.GetLastNDrop(&stack)
+			errors.CheckErr(err)
+			b, err := operations.GetLastNDrop(&stack)
+			errors.CheckErr(err)
 			s := 0
 			if a == b {
 				s = 1
 			}
 			stack = append(stack, s)
 			ip++
-		case TYPES.OpGT:
-			a, err := OP.GetLastNDrop(&stack)
-			ERR.CheckErr(err)
-			b, err := OP.GetLastNDrop(&stack)
-			ERR.CheckErr(err)
+		case types.OpGT:
+			a, err := operations.GetLastNDrop(&stack)
+			errors.CheckErr(err)
+			b, err := operations.GetLastNDrop(&stack)
+			errors.CheckErr(err)
 			s := 0
 			if b.(int) > a.(int) {
 				s = 1
 			}
 			stack = append(stack, s)
 			ip++
-		case TYPES.OpIf:
-			a, err := OP.GetLastNDrop(&stack)
-			ERR.CheckErr(err)
+		case types.OpIf:
+			a, err := operations.GetLastNDrop(&stack)
+			errors.CheckErr(err)
 			if a == 0 {
-				ASSERT.AssertThat(len(op) >= 2, "'If' instruction does not have an end block")
+				asserts.AssertThat(len(op) >= 2, "'If' instruction does not have an end block")
 				ip = op[1].(int)
 			} else {
 				ip++
 			}
-		case TYPES.OpElse:
-			ASSERT.AssertThat(len(op) >= 2, "'Else' instruction does not have an If reference block")
+		case types.OpElse:
+			asserts.AssertThat(len(op) >= 2, "'Else' instruction does not have an If reference block")
 			ip = op[1].(int)
-		case TYPES.OpDup:
-			a, err := OP.GetLastNDrop(&stack)
-			ERR.CheckErr(err)
+		case types.OpDup:
+			a, err := operations.GetLastNDrop(&stack)
+			errors.CheckErr(err)
 			stack = append(stack, a, a)
 			ip++
-		case TYPES.OpWhile:
+		case types.OpWhile:
 			ip++
-		case TYPES.OpDo:
-			a, err := OP.GetLastNDrop(&stack)
-			ERR.CheckErr(err)
+		case types.OpDo:
+			a, err := operations.GetLastNDrop(&stack)
+			errors.CheckErr(err)
 			if a.(int) == 0 {
-				ASSERT.AssertThat(len(op) >= 2, "'End' instruction does not have an reference to any block")
+				asserts.AssertThat(len(op) >= 2, "'End' instruction does not have an reference to any block")
 				ip = op[1].(int)
 			} else {
 				ip++
 			}
-		case TYPES.OpEnd:
-			ASSERT.AssertThat(len(op) >= 2, "'End' instruction does not have an reference to any block")
+		case types.OpEnd:
+			asserts.AssertThat(len(op) >= 2, "'End' instruction does not have an reference to any block")
 			ip = op[1].(int)
+		case types.OpMem:
+			stack = append(stack, 0)
+			ip++
+		case types.OpStore:
+			value, err := operations.GetLastNDrop(&stack)
+			errors.CheckErr(err)
+			addr, err := operations.GetLastNDrop(&stack)
+			errors.CheckErr(err)
+
+			mem[addr.(int)] = uint8(value.(int))
+			ip++
+		case types.OpLoad:
+			addr, err := operations.GetLastNDrop(&stack)
+			errors.CheckErr(err)
+			stack = append(stack, string(mem[addr.(int)]))
+			ip++
 		default:
-			ASSERT.AssertThat(false, "unreachable")
+			asserts.AssertThat(false, "unreachable")
 		}
 	}
 }
